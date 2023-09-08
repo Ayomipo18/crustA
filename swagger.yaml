@@ -1,0 +1,483 @@
+components:
+  schemas:
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+
+    AuthUrlResponse:
+      type: string
+
+    AuthUrlResponseSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data: 
+          $ref: '#components/schemas/AuthUrlResponse'
+
+
+    AuthDTO:
+      type: object
+      properties:
+        code: 
+          type: string
+          required: true
+
+    UserLoginResponse:
+      type: object
+      properties:
+        name: 
+          type: string
+        email: 
+          type: string
+        id: 
+          type: number
+        username:
+          type: string
+        accessToken: 
+          type: string
+        refreshToken: 
+          type: string
+
+    UserLoginSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data: 
+          $ref: '#components/schemas/UserLoginResponse'
+
+    AuthTokenDTO:
+      type: object
+      properties:
+        accessToken: 
+          type: string
+        refreshToken: 
+          type: string
+
+    AuthTokenResponse:
+      $ref: '#components/schemas/AuthTokenDTO'
+
+    AuthTokenResponseSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data: 
+          $ref: '#components/schemas/AuthTokenResponse'
+
+    CreateUserDTO:
+      type: object
+      properties:
+        username: 
+          type: string
+        email: 
+          type: string
+          format: email
+        password: 
+          type: string
+
+    LoginUserDTO:
+      type: object
+      properties:
+        user: 
+          type: string
+        password: 
+          type: string
+
+    CreateTaskDTO:
+      type: object
+      properties:  
+        title: 
+          type: string
+        description: 
+          type: string
+
+    UpdateTaskDTO:
+      $ref: '#components/schemas/CreateTaskDTO'
+
+    TaskResponse:
+      type: object
+      properties:
+        id: 
+          type: number             
+        title: 
+          type: string
+        description: 
+          type: string
+        userId:  
+          type: string
+
+    TaskResponseSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data: 
+          $ref: '#components/schemas/TaskResponse'
+
+    TaskResponsePagedResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#components/schemas/TaskResponse'
+        meta:
+          $ref: '#components/schemas/Meta'
+
+    Meta:
+      type: object
+      properties:
+        nextPage: 
+          type: integer
+          format: int32
+          nullable: true
+        previousPage: 
+          type: integer
+          format: int32
+          nullable: true
+        totalPages: 
+          type: integer
+          format: int32
+        pageSize: 
+          type: integer
+          format: int32
+        total: 
+          type: integer
+          format: int32         
+
+  parameters:
+
+    googleAuthCodeParameter:
+      in: query
+      name: code
+      description: google auth code
+      schema:
+        type: string
+      required: true
+
+    idParameter:
+      in: path
+      name: id
+      description: id to get a resource
+      schema:
+        type: string
+      required: true
+
+    pageNumberParameter:
+      in: query
+      name: pageNumber
+      description: Page Number to retrieve
+      schema:
+        type: integer
+        minimum: 1
+        format: int32
+
+    pageSizeParameter:
+      in: query
+      name: pageSize
+      description: Page Size to retrieve
+      schema:
+        type: integer
+        minimum: 1
+        format: int32
+
+    searchParameter:
+      in: query
+      name: search
+      description: search value
+      schema:
+        type: string
+
+    sortParameter:
+      in: query
+      name: sort
+      description: Field to sort by. Only formats allowed are -yourSortField or yourSortField
+      schema:
+        type: string
+
+  responses:
+
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalServerError:
+      description: Error occurred while processing this request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+tags:
+- name: Auth
+  description: Auth API
+
+- name: Task
+  description: Task API
+
+paths:
+
+  /auth/register:
+    post:
+      tags:
+      - Auth
+      description: Registers a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDTO'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/UserLoginSuccessResponse'
+                example:
+                  $ref: '#components/schemas/UserLoginSuccessResponse'
+        400:
+          $ref: '#components/responses/BadRequest'
+
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      description: Endpoint to login a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUserDTO'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/UserLoginSuccessResponse'
+                example:
+                  $ref: '#components/schemas/UserLoginSuccessResponse'
+        400:
+          $ref: '#components/responses/BadRequest'
+
+  /auth/google:
+    get:
+      tags:
+      - Auth
+      description: Returns google auth url. Use this link to Login and Authorize CrustA to access your google details.
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/AuthUrlResponseSuccessResponse'
+                example:
+                  $ref: '#components/schemas/AuthUrlResponseSuccessResponse'
+
+  /auth/google/callback:
+    get:
+      tags:
+      - Auth
+      description: Returns user profile, auth details. This is a callback function from /auth/google.
+      parameters:
+        - $ref: '#components/parameters/googleAuthCodeParameter'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/UserLoginSuccessResponse'
+                example:
+                  $ref: '#components/schemas/UserLoginSuccessResponse'
+        400:
+          $ref: '#components/responses/BadRequest'
+        500:
+          $ref: '#components/responses/InternalServerError'
+
+  /auth/token/refresh:
+    post:
+      tags:
+      - Auth
+      description: Refreshes the access token. If accessToken hasn't expired, it won't give a new accessToken and refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthTokenDTO'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/AuthTokenResponseSuccessResponse'
+                example:
+                  $ref: '#components/schemas/AuthTokenResponseSuccessResponse'
+        400:
+          $ref: '#components/responses/BadRequest'
+
+  /tasks:
+    get:
+      tags:
+      - Task
+      description: Returns tasks for a user
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#components/parameters/pageNumberParameter'
+        - $ref: '#components/parameters/pageSizeParameter'
+        - $ref: '#components/parameters/searchParameter'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/TaskResponsePagedResponse'
+                example:
+                  $ref: '#components/schemas/TaskResponsePagedResponse'
+        400:
+          $ref: '#components/responses/BadRequest'
+        401:
+          $ref: '#components/responses/Unauthorized'
+
+    post:
+      tags:
+      - Task
+      description: Creates an Task
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskDTO'
+      responses:
+        201:
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/TaskResponseSuccessResponse'
+                example:
+                  $ref: '#components/schemas/TaskResponseSuccessResponse'
+        400:
+          $ref: '#components/responses/BadRequest'
+        401:
+          $ref: '#components/responses/Unauthorized'
+        404:
+          $ref: '#components/responses/NotFound'
+
+  /tasks/{id}:
+    get:
+      tags:
+      - Task
+      description: Returns a Task for a user
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#components/parameters/idParameter'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/TaskResponseSuccessResponse'
+                example:
+                  $ref: '#components/schemas/TaskResponseSuccessResponse'
+        400:
+          $ref: '#components/responses/BadRequest'
+        401:
+          $ref: '#components/responses/Unauthorized'
+        404:
+          $ref: '#components/responses/NotFound'
+
+    put:
+      tags:
+      - Task
+      description: Updates a Task
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#components/parameters/idParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskDTO'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/TaskResponseSuccessResponse'
+                example:
+                  $ref: '#components/schemas/TaskResponseSuccessResponse'
+        400:
+          $ref: '#components/responses/BadRequest'
+        401:
+          $ref: '#components/responses/Unauthorized'
+        404:
+          $ref: '#components/responses/NotFound'
+
+    delete:
+      tags:
+      - Task
+      description: deletes a Task
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#components/parameters/idParameter'
+      responses:
+        204:
+          description: 'No Content'
+        400:
+          $ref: '#components/responses/BadRequest'
+        401:
+          $ref: '#components/responses/Unauthorized'
+        404:
+          $ref: '#components/responses/NotFound'
+
+schemes:
+ - https
+ - http

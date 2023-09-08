@@ -24,11 +24,11 @@
     - JWT_SECRET. Set any value you desire
     - API_VERSION. Use the value in the env.example
     
-    - # Create a database on postgresql and use your postgresql connection properties for this section.
-    - DB_DATABASE is your postgressql database
-    - DB_USERNAME is your postgressql username
-    - DB_PASSWORD is your postgressql password
-    - DB_HOST is your postgressql host
+    - ### Create a database on postgresql and use your postgresql connection properties for this section.
+    - DB_DATABASE is your postgresql database
+    - DB_USERNAME is your postgresql username
+    - DB_PASSWORD is your postgresql password
+    - DB_HOST is your postgresql host
 
 - ensure Node.js and posgtresql are installed on your system.
 

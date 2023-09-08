@@ -2,7 +2,7 @@
 
 - An API for authentication
 
-## How to run this project locally without docker
+## How to run this project locally
 
 - clone this repository
 

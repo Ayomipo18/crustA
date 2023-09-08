@@ -33,6 +33,8 @@ npm install
 npm run dev
 ```
 
+- Open your browser and paste this http://localhost:3000/docs to see the swagger documentation
+
 or 
 
 - run this command
@@ -45,3 +47,5 @@ npm run build
 ```bash
 npm run start
 ```
+
+- Open your browser and paste this http://localhost:3000/docs to see the swagger documentation

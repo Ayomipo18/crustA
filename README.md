@@ -10,6 +10,8 @@
 
 - Go to Google cloud console, create a project and create an OAuth 2.0 Client ID. The credentials of the Client is what will be used below.
 
+- You can also follow this guide on creating a project on Google Cloud Console https://developers.google.com/workspace/guides/create-project
+
 - use the envexample to set up the project. Create a .env file and set the values using the guideline below
     - CLIENT_ID is your google cloud console project client id
     - CLIENT_SECRET is your google cloud console project client secret
@@ -55,3 +57,5 @@ npm run start
 ```
 
 - Open your browser and paste this http://localhost:3000/docs to see the swagger documentation
+
+- You can reach out to me ayomiposolaja@gmail.com for clarity or questions regarding the project.

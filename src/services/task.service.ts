@@ -34,22 +34,21 @@ export default class TaskService implements ITaskService {
                     userId: loggedInUser.id,
                     [Op.or]: [{title: {[Op.like]: `%${taskParameters.search}%`}}, {description: {[Op.like]: `%${taskParameters.search}%`}}]
                 },
-                limit: taskParameters.pageSize,
-                offset: taskParameters.pageSize * (taskParameters.pageNumber - 1)
+                offset: (taskParameters.pageSize * (taskParameters.pageNumber - 1)),
+                limit: taskParameters.pageSize
             });
         } else {
             count = await this._task.count({
                 where: {
-                    userId: loggedInUser.id,
-                    [Op.or]: [{title: {[Op.like]: `%${taskParameters.search}%`}}, {description: {[Op.like]: `%${taskParameters.search}%`}}]
+                    userId: loggedInUser.id
                 }
             });
             tasks = await this._task.findAll({
                 where: {
                     userId: loggedInUser.id
                 },
-                limit: taskParameters.pageSize,
-                offset: taskParameters.pageSize * (taskParameters.pageNumber - 1)
+                offset: (taskParameters.pageSize * (taskParameters.pageNumber - 1)),
+                limit: taskParameters.pageSize
             });
         }
 

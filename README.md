@@ -2,6 +2,10 @@
 
 - An API for authentication
 
+- The database schema is in the models folder
+
+- The swagger file is swagger.yaml and can be accessed on the broswer via http://localhost:3000/docs after setting up the project locally.
+
 ## How to run this project locally
 
 - clone this repository
@@ -41,7 +45,7 @@ npm install
 npm run dev
 ```
 
-- Open your browser and paste this http://localhost:3000/docs to see the swagger documentation
+- Open your browser and paste http://localhost:3000/docs to see the swagger documentation
 
 or 
 
@@ -56,6 +60,9 @@ npm run build
 npm run start
 ```
 
-- Open your browser and paste this http://localhost:3000/docs to see the swagger documentation
+- Open your browser and paste http://localhost:3000/docs to see the swagger documentation
 
 - You can reach out to me ayomiposolaja@gmail.com for clarity or questions regarding the project.
+
+### Note
+- On swagger, you don't need to add prefix "Bearer " to the jwt token but you must have this prefix if you are using postman to test.
